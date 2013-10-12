@@ -83,7 +83,7 @@ int GGLAssembler::scanline(const needs_t& needs, context_t const* c)
             needs.p, needs.n, needs.t[0], needs.t[1], per_fragment_ops);
 
     if (err) {
-        ALOGE("Error while generating ""%s""\n", name);
+        //ALOGE("Error while generating ""%s""\n", name);
         disassemble(name);
         return -1;
     }
@@ -1090,9 +1090,9 @@ void RegisterAllocator::RegisterFile::reset()
 int RegisterAllocator::RegisterFile::reserve(int reg)
 {
     reg += mRegisterOffset;
-    LOG_ALWAYS_FATAL_IF(isUsed(reg),
-                        "reserving register %d, but already in use",
-                        reg);
+    //LOG_ALWAYS_FATAL_IF(isUsed(reg),
+    //                    "reserving register %d, but already in use",
+    //                    reg);
     mRegs |= (1<<reg);
     mTouched |= mRegs;
     return reg;
@@ -1107,7 +1107,7 @@ void RegisterAllocator::RegisterFile::reserveSeveral(uint32_t regMask)
 
 int RegisterAllocator::RegisterFile::isUsed(int reg) const
 {
-    LOG_ALWAYS_FATAL_IF(reg>=16+(int)mRegisterOffset, "invalid register %d", reg);
+    //LOG_ALWAYS_FATAL_IF(reg>=16+(int)mRegisterOffset, "invalid register %d", reg);
     return mRegs & (1<<reg);
 }
 

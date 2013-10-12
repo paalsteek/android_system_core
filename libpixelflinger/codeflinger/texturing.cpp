@@ -795,7 +795,7 @@ void GGLAssembler::filter16(
             break;
         default:
             // unsupported format, do something sensical...
-            ALOGE("Unsupported 16-bits texture format (%d)", tmu.format_idx);
+            //ALOGE("Unsupported 16-bits texture format (%d)", tmu.format_idx);
             LDRH(AL, texel.reg, txPtr.reg);
             return;
     }

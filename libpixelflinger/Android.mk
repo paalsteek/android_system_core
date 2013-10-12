@@ -51,6 +51,7 @@ PIXELFLINGER_CFLAGS += -fstrict-aliasing -fomit-frame-pointer
 endif
 
 LOCAL_SHARED_LIBRARIES := libcutils liblog
+LOCAL_LDLIBS += -llog
 
 #
 # Shared library

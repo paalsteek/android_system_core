@@ -171,8 +171,8 @@ int ARMAssembler::generate(const char* name)
     while (count--) {
         const branch_target_t& bt = mBranchTargets[count];
         uint32_t* target_pc = mLabels.valueFor(bt.label);
-        LOG_ALWAYS_FATAL_IF(!target_pc,
-                "error resolving branch targets, target_pc is null");
+        //LOG_ALWAYS_FATAL_IF(!target_pc,
+        //        "error resolving branch targets, target_pc is null");
         int32_t offset = int32_t(target_pc - (bt.pc+2));
         *bt.pc |= offset & 0xFFFFFF;
     }
@@ -182,7 +182,7 @@ int ARMAssembler::generate(const char* name)
     // the instruction cache is flushed by CodeCache
     const int64_t duration = ggl_system_time() - mDuration;
     const char * const format = "generated %s (%d ins) at [%p:%p] in %lld ns\n";
-    ALOGI(format, name, int(pc()-base()), base(), pc(), duration);
+    //ALOGI(format, name, int(pc()-base()), base(), pc(), duration);
 
 #if defined(WITH_LIB_HARDWARE)
     if (__builtin_expect(mQemuTracing, 0)) {
@@ -228,41 +228,41 @@ void ARMAssembler::dataProcessing(int opcode, int cc,
 void ARMAssembler::MLA(int cc, int s,
         int Rd, int Rm, int Rs, int Rn) {
     if (Rd == Rm) { int t = Rm; Rm=Rs; Rs=t; } 
-    LOG_FATAL_IF(Rd==Rm, "MLA(r%u,r%u,r%u,r%u)", Rd,Rm,Rs,Rn);
+    //LOG_FATAL_IF(Rd==Rm, "MLA(r%u,r%u,r%u,r%u)", Rd,Rm,Rs,Rn);
     *mPC++ =    (cc<<28) | (1<<21) | (s<<20) |
                 (Rd<<16) | (Rn<<12) | (Rs<<8) | 0x90 | Rm;
 }
 void ARMAssembler::MUL(int cc, int s,
         int Rd, int Rm, int Rs) {
     if (Rd == Rm) { int t = Rm; Rm=Rs; Rs=t; } 
-    LOG_FATAL_IF(Rd==Rm, "MUL(r%u,r%u,r%u)", Rd,Rm,Rs);
+    //LOG_FATAL_IF(Rd==Rm, "MUL(r%u,r%u,r%u)", Rd,Rm,Rs);
     *mPC++ = (cc<<28) | (s<<20) | (Rd<<16) | (Rs<<8) | 0x90 | Rm;
 }
 void ARMAssembler::UMULL(int cc, int s,
         int RdLo, int RdHi, int Rm, int Rs) {
-    LOG_FATAL_IF(RdLo==Rm || RdHi==Rm || RdLo==RdHi,
-                        "UMULL(r%u,r%u,r%u,r%u)", RdLo,RdHi,Rm,Rs);
+    //LOG_FATAL_IF(RdLo==Rm || RdHi==Rm || RdLo==RdHi,
+    //                    "UMULL(r%u,r%u,r%u,r%u)", RdLo,RdHi,Rm,Rs);
     *mPC++ =    (cc<<28) | (1<<23) | (s<<20) |
                 (RdHi<<16) | (RdLo<<12) | (Rs<<8) | 0x90 | Rm;
 }
 void ARMAssembler::UMUAL(int cc, int s,
         int RdLo, int RdHi, int Rm, int Rs) {
-    LOG_FATAL_IF(RdLo==Rm || RdHi==Rm || RdLo==RdHi,
-                        "UMUAL(r%u,r%u,r%u,r%u)", RdLo,RdHi,Rm,Rs);
+    //LOG_FATAL_IF(RdLo==Rm || RdHi==Rm || RdLo==RdHi,
+    //                    "UMUAL(r%u,r%u,r%u,r%u)", RdLo,RdHi,Rm,Rs);
     *mPC++ =    (cc<<28) | (1<<23) | (1<<21) | (s<<20) |
                 (RdHi<<16) | (RdLo<<12) | (Rs<<8) | 0x90 | Rm;
 }
 void ARMAssembler::SMULL(int cc, int s,
         int RdLo, int RdHi, int Rm, int Rs) {
-    LOG_FATAL_IF(RdLo==Rm || RdHi==Rm || RdLo==RdHi,
-                        "SMULL(r%u,r%u,r%u,r%u)", RdLo,RdHi,Rm,Rs);
+    //LOG_FATAL_IF(RdLo==Rm || RdHi==Rm || RdLo==RdHi,
+    //                    "SMULL(r%u,r%u,r%u,r%u)", RdLo,RdHi,Rm,Rs);
     *mPC++ =    (cc<<28) | (1<<23) | (1<<22) | (s<<20) |
                 (RdHi<<16) | (RdLo<<12) | (Rs<<8) | 0x90 | Rm;
 }
 void ARMAssembler::SMUAL(int cc, int s,
         int RdLo, int RdHi, int Rm, int Rs) {
-    LOG_FATAL_IF(RdLo==Rm || RdHi==Rm || RdLo==RdHi,
-                        "SMUAL(r%u,r%u,r%u,r%u)", RdLo,RdHi,Rm,Rs);
+    //LOG_FATAL_IF(RdLo==Rm || RdHi==Rm || RdLo==RdHi,
+    //                    "SMUAL(r%u,r%u,r%u,r%u)", RdLo,RdHi,Rm,Rs);
     *mPC++ =    (cc<<28) | (1<<23) | (1<<22) | (1<<21) | (s<<20) |
                 (RdHi<<16) | (RdLo<<12) | (Rs<<8) | 0x90 | Rm;
 }
@@ -369,8 +369,8 @@ void ARMAssembler::SWI(int cc, uint32_t comment) {
 
 // DSP instructions...
 void ARMAssembler::PLD(int Rn, uint32_t offset) {
-    LOG_ALWAYS_FATAL_IF(!((offset&(1<<24)) && !(offset&(1<<21))),
-                        "PLD only P=1, W=0");
+    //LOG_ALWAYS_FATAL_IF(!((offset&(1<<24)) && !(offset&(1<<21))),
+    //                    "PLD only P=1, W=0");
     *mPC++ = 0xF550F000 | (Rn<<16) | offset;
 }
 
@@ -496,13 +496,13 @@ uint32_t ARMAssembler::imm(uint32_t immediate)
     uint32_t rot, imm;
     int err = buildImmediate(immediate, rot, imm);
 
-    LOG_ALWAYS_FATAL_IF(err==-EINVAL,
-                        "immediate %08x cannot be encoded",
-                        immediate);
+    //LOG_ALWAYS_FATAL_IF(err==-EINVAL,
+    //                    "immediate %08x cannot be encoded",
+    //                    immediate);
 
-    LOG_ALWAYS_FATAL_IF(err,
-                        "immediate (%08x) encoding bogus!",
-                        immediate);
+    //LOG_ALWAYS_FATAL_IF(err,
+    //                    "immediate (%08x) encoding bogus!",
+    //                    immediate);
 
     return (1<<25) | (rot<<8) | imm;
 }
@@ -526,18 +526,18 @@ uint32_t ARMAssembler::reg_reg(int Rm, int type, int Rs)
 // LDR(B)/STR(B)/PLD (immediate and Rm can be negative, which indicate U=0)
 uint32_t ARMAssembler::immed12_pre(int32_t immed12, int W)
 {
-    LOG_ALWAYS_FATAL_IF(abs(immed12) >= 0x800,
-                        "LDR(B)/STR(B)/PLD immediate too big (%08x)",
-                        immed12);
+    //LOG_ALWAYS_FATAL_IF(abs(immed12) >= 0x800,
+    //                    "LDR(B)/STR(B)/PLD immediate too big (%08x)",
+    //                    immed12);
     return (1<<24) | (((uint32_t(immed12)>>31)^1)<<23) |
             ((W&1)<<21) | (abs(immed12)&0x7FF);
 }
 
 uint32_t ARMAssembler::immed12_post(int32_t immed12)
 {
-    LOG_ALWAYS_FATAL_IF(abs(immed12) >= 0x800,
-                        "LDR(B)/STR(B)/PLD immediate too big (%08x)",
-                        immed12);
+    //LOG_ALWAYS_FATAL_IF(abs(immed12) >= 0x800,
+    //                    "LDR(B)/STR(B)/PLD immediate too big (%08x)",
+    //                    immed12);
 
     return (((uint32_t(immed12)>>31)^1)<<23) | (abs(immed12)&0x7FF);
 }
@@ -560,9 +560,9 @@ uint32_t ARMAssembler::immed8_pre(int32_t immed8, int W)
 {
     uint32_t offset = abs(immed8);
 
-    LOG_ALWAYS_FATAL_IF(abs(immed8) >= 0x100,
-                        "LDRH/LDRSB/LDRSH/STRH immediate too big (%08x)",
-                        immed8);
+    //LOG_ALWAYS_FATAL_IF(abs(immed8) >= 0x100,
+    //                    "LDRH/LDRSB/LDRSH/STRH immediate too big (%08x)",
+    //                    immed8);
 
     return  (1<<24) | (1<<22) | (((uint32_t(immed8)>>31)^1)<<23) |
             ((W&1)<<21) | (((offset&0xF0)<<4)|(offset&0xF));
@@ -572,9 +572,9 @@ uint32_t ARMAssembler::immed8_post(int32_t immed8)
 {
     uint32_t offset = abs(immed8);
 
-    LOG_ALWAYS_FATAL_IF(abs(immed8) >= 0x100,
-                        "LDRH/LDRSB/LDRSH/STRH immediate too big (%08x)",
-                        immed8);
+   //LOG_ALWAYS_FATAL_IF(abs(immed8) >= 0x100,
+   //                     "LDRH/LDRSB/LDRSH/STRH immediate too big (%08x)",
+   //                     immed8);
 
     return (1<<22) | (((uint32_t(immed8)>>31)^1)<<23) |
             (((offset&0xF0)<<4) | (offset&0xF));

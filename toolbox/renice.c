@@ -90,14 +90,14 @@ int get_sched(char *str)
 
 int renice_main(int argc, char *argv[])
 {
-    int prio;
+    int prio = -21;
     int realtime = 0;
     int opt;
     int sched = SCHED_RR;
     char *cmd = argv[0];
 
     do {
-        opt = getopt(argc, argv, "rt:g:");
+        opt = getopt(argc, argv, "rt:g:n:");
         if (opt == -1)
             break;
         switch (opt) {
@@ -111,20 +111,26 @@ int renice_main(int argc, char *argv[])
         case 'g':
             print_prio(atoi(optarg));
             return 0;
+        case 'n':
+        	  prio = 0 - atoi(optarg);
+        	  break;
         default:
             usage(cmd);
+            break;
         }
     } while (1);
 
     argc -= optind;
     argv += optind;
 
-    if (argc < 1)
-        usage(cmd);
-
-    prio = atoi(argv[0]);
-    argc--;
-    argv++;
+    if (-21 == prio) {
+	    if (argc < 1)
+	        usage(cmd);
+	
+	    prio = atoi(argv[0]);
+	    argc--;
+	    argv++;
+    }
 
     if (argc < 1)
         usage(cmd);

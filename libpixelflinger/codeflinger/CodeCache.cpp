@@ -66,8 +66,8 @@ static void heap_error(const char* msg, const char* function, void* p);
 #include "../../../../bionic/libc/upstream-dlmalloc/malloc.c"
 
 static void heap_error(const char* msg, const char* function, void* p) {
-    ALOG(LOG_FATAL, LOG_TAG, "@@@ ABORTING: CODE FLINGER: %s IN %s addr=%p",
-         msg, function, p);
+    //ALOG(LOG_FATAL, LOG_TAG, "@@@ ABORTING: CODE FLINGER: %s IN %s addr=%p",
+    //     msg, function, p);
     /* So that we can get a memory dump around p */
     *((int **) 0xdeadbaad) = (int *) p;
 }
@@ -83,15 +83,15 @@ static mspace getMspace()
     if (gExecutableStore == NULL) {
         int fd = ashmem_create_region("CodeFlinger code cache",
                                       kMaxCodeCacheCapacity);
-        LOG_ALWAYS_FATAL_IF(fd < 0,
-                            "Creating code cache, ashmem_create_region "
-                            "failed with error '%s'", strerror(errno));
+        //LOG_ALWAYS_FATAL_IF(fd < 0,
+        //                    "Creating code cache, ashmem_create_region "
+        //                    "failed with error '%s'", strerror(errno));
         gExecutableStore = mmap(NULL, kMaxCodeCacheCapacity,
                                 PROT_READ | PROT_WRITE | PROT_EXEC,
                                 MAP_PRIVATE, fd, 0);
-        LOG_ALWAYS_FATAL_IF(gExecutableStore == NULL,
-                            "Creating code cache, mmap failed with error "
-                            "'%s'", strerror(errno));
+        //LOG_ALWAYS_FATAL_IF(gExecutableStore == NULL,
+        //                    "Creating code cache, mmap failed with error "
+        //                    "'%s'", strerror(errno));
         close(fd);
         gMspace = create_mspace_with_base(gExecutableStore, kMaxCodeCacheCapacity,
                                           /*locked=*/ false);
@@ -104,9 +104,9 @@ Assembly::Assembly(size_t size)
     : mCount(1), mSize(0)
 {
     mBase = (uint32_t*)mspace_malloc(getMspace(), size);
-    LOG_ALWAYS_FATAL_IF(mBase == NULL,
-                        "Failed to create Assembly of size %zd in executable "
-                        "store of size %zd", size, kMaxCodeCacheCapacity);
+    //LOG_ALWAYS_FATAL_IF(mBase == NULL,
+    //                    "Failed to create Assembly of size %zd in executable "
+    //                    "store of size %zd", size, kMaxCodeCacheCapacity);
     mSize = size;
 }
 
@@ -141,9 +141,9 @@ uint32_t* Assembly::base() const
 ssize_t Assembly::resize(size_t newSize)
 {
     mBase = (uint32_t*)mspace_realloc(getMspace(), mBase, newSize);
-    LOG_ALWAYS_FATAL_IF(mBase == NULL,
-                        "Failed to resize Assembly to %zd in code cache "
-                        "of size %zd", newSize, kMaxCodeCacheCapacity);
+    //LOG_ALWAYS_FATAL_IF(mBase == NULL,
+    //                    "Failed to resize Assembly to %zd in code cache "
+    //                    "of size %zd", newSize, kMaxCodeCacheCapacity);
     mSize = newSize;
     return size();
 }
@@ -205,8 +205,8 @@ int CodeCache::cache(  const AssemblyKeyBase& keyBase,
         const long base = long(assembly->base());
         const long curr = base + long(assembly->size());
         err = cacheflush(base, curr, 0);
-        ALOGE_IF(err, "cacheflush error %s\n",
-                 strerror(errno));
+        //ALOGE_IF(err, "cacheflush error %s\n",
+        //         strerror(errno));
 #endif
     }
 
